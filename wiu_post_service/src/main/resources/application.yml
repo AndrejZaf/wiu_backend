@@ -23,6 +23,12 @@ spring:
     hibernate:
       ddl-auto: create
     database-platform: com.writeitup.wiu_post_service.config.CustomPostgreSQLDialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8090/realms/writeitup}
+          jwk-set-uri: ${KEYCLOAK_JWK_URI:http://localhost:8090/realms/writeitup/protocol/openid-connect/certs}
 server:
   port: 8082
 

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping
+    @PreAuthorize("permitAll()")
     public ResponseEntity<Page<PostDTO>> getPosts(@RequestParam final int page, @RequestParam final int size,
                                                   @RequestParam(required = false) final String search,
                                                   @RequestParam(defaultValue = "title;desc") String sort) {
@@ -35,21 +37,25 @@ public class PostController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PostDTO> createPost(@RequestBody final CreatePostDTO post) {
         return new ResponseEntity<>(postService.create(post), HttpStatus.CREATED);
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PostDTO> updatePost(@RequestBody final PostDTO post) {
         return new ResponseEntity<>(postService.update(post), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<PostDTO> findPostById(@PathVariable final UUID id) {
         return new ResponseEntity<>(postService.findById(id), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Void> deletePostById(@PathVariable final UUID id) {
         postService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

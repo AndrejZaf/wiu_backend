@@ -3,6 +3,7 @@ package com.writeitup.wiu_post_service.service.impl;
 import com.writeitup.wiu_post_service.domain.Post;
 import com.writeitup.wiu_post_service.dto.CreatePostDTO;
 import com.writeitup.wiu_post_service.dto.PostDTO;
+import com.writeitup.wiu_post_service.exception.ForbiddenException;
 import com.writeitup.wiu_post_service.repository.PostRepository;
 import com.writeitup.wiu_post_service.service.PostService;
 import com.writeitup.wiu_post_service.util.PostMapper;
@@ -20,6 +21,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.writeitup.wiu_post_service.specification.PostSpecification.createSearchSpecification;
+import static com.writeitup.wiu_post_service.util.JwtUtil.getJwtClaim;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +42,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDTO update(final PostDTO postDTO) {
         Post post = postRepository.findById(postDTO.getId()).orElseThrow(EntityNotFoundException::new);
+        validateOwnership(post.getAuthorId(), UUID.fromString(getJwtClaim("id")));
         postMapper.updatePost(postDTO, post);
         final String vector = generateTsVector(postDTO.getTitle(), postDTO.getContent(), Collections.emptyList());
         post.setSearchVector(vector);
@@ -55,7 +58,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deleteById(final UUID id) {
-        postRepository.deleteById(id);
+        final Post post = postRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        validateOwnership(post.getAuthorId(), UUID.fromString(getJwtClaim("id")));
+        postRepository.delete(post);
     }
 
     @Override
@@ -66,12 +71,18 @@ public class PostServiceImpl implements PostService {
                 .map(postMapper::toPostDTO);
     }
 
-    private Sort.Order parseSortParams(String sortParams) {
-        String[] split = sortParams.split(";");
+    private Sort.Order parseSortParams(final String sortParams) {
+        final String[] split = sortParams.split(";");
         return new Sort.Order(Sort.Direction.fromString(split[1]), split[0]);
     }
 
-    private String generateTsVector(String title, String content, List<String> tags) {
-        return String.format("%s %s %s", title, content, tags.stream().collect(Collectors.joining(" ")));
+    private String generateTsVector(final String title, final String content, final List<String> tags) {
+        return String.format("%s %s %s", title, content, String.join(" ", tags));
+    }
+
+    private void validateOwnership(final UUID postAuthorId, final UUID tokenAuthorId) {
+        if (!postAuthorId.equals(tokenAuthorId)) {
+            throw new ForbiddenException();
+        }
     }
 }

@@ -33,7 +33,7 @@ public class Post extends Auditable {
     private String content;
 
     @Column(name = "author_id", nullable = false)
-    private UUID author_id;
+    private UUID authorId;
 
     @Type(ListArrayType.class)
     @Column(name = "tags", columnDefinition = "varchar[]")
