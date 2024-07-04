@@ -83,7 +83,7 @@ public class PostController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PostDTO.class))}),
             @ApiResponse(responseCode = "404", description = "The post with the provided ID is not found",
                     content = {@Content(mediaType = "application/json", schema = @Schema())})})
-    public ResponseEntity<PostDTO> findPostById(@PathVariable final UUID id) {
+    public ResponseEntity<PostDTO> getPostById(@PathVariable final UUID id) {
         return new ResponseEntity<>(postService.findById(id), HttpStatus.OK);
     }
 
