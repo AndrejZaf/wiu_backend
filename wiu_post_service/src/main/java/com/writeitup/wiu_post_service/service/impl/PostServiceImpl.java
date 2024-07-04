@@ -4,6 +4,7 @@ import com.writeitup.wiu_post_service.domain.Post;
 import com.writeitup.wiu_post_service.dto.CreatePostDTO;
 import com.writeitup.wiu_post_service.dto.PostDTO;
 import com.writeitup.wiu_post_service.exception.ForbiddenException;
+import com.writeitup.wiu_post_service.exception.PostNotFoundException;
 import com.writeitup.wiu_post_service.repository.PostRepository;
 import com.writeitup.wiu_post_service.service.PostService;
 import com.writeitup.wiu_post_service.util.PostMapper;
@@ -41,7 +42,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO update(final PostDTO postDTO) {
-        Post post = postRepository.findById(postDTO.getId()).orElseThrow(EntityNotFoundException::new);
+        Post post = postRepository.findById(postDTO.getId()).orElseThrow(PostNotFoundException::new);
         validateOwnership(post.getAuthorId(), UUID.fromString(getJwtClaim("id")));
         postMapper.updatePost(postDTO, post);
         final String vector = generateTsVector(postDTO.getTitle(), postDTO.getContent(), Collections.emptyList());
@@ -52,13 +53,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO findById(final UUID id) {
-        final Post post = postRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        final Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
         return postMapper.toPostDTO(post);
     }
 
     @Override
     public void deleteById(final UUID id) {
-        final Post post = postRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        final Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
         validateOwnership(post.getAuthorId(), UUID.fromString(getJwtClaim("id")));
         postRepository.delete(post);
     }
