@@ -11,6 +11,33 @@ spring:
       discovery:
         prefer-ip-address: ${CONSUL_IP_PREFERENCE:true}
         service-name: ${spring.application.name}
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origins:
+              - "http://localhost:4200"
+              - "http://localhost:4201"
+            allowed-headers:
+              - "*"
+            allowed-methods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+              - HEAD
+      discovery:
+        locator:
+          lower-case-service-id: true
+      routes:
+        - id: wiu-post-service
+          uri: lb://wiu-post-service
+          predicates:
+            - Path=/api/v1/posts/**
 management:
   endpoints:
     web:
