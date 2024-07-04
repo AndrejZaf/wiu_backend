@@ -22,6 +22,7 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: create
+    database-platform: com.writeitup.wiu_post_service.config.CustomPostgreSQLDialect
 server:
   port: 8082
 
