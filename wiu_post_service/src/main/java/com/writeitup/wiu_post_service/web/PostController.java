@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/posts")
@@ -42,6 +44,7 @@ public class PostController {
     public ResponseEntity<Page<PostDTO>> getPosts(@RequestParam final int page, @RequestParam final int size,
                                                   @RequestParam(required = false) final String search,
                                                   @RequestParam(defaultValue = "title;desc") String sort) {
+        log.info("Received request to retrieve a page of posts by: page=[{}], size=[{}], search=[{}], sort=[{}]", page, size, search, sort);
         return new ResponseEntity<>(postService.findAllBy(search, page, size, sort), HttpStatus.OK);
     }
 
@@ -54,6 +57,7 @@ public class PostController {
             @ApiResponse(responseCode = "400", description = "The parameters supplied for the creation of the post are invalid",
                     content = {@Content(mediaType = "application/json", schema = @Schema())})})
     public ResponseEntity<PostDTO> createPost(@RequestBody @Valid final CreatePostDTO post) {
+        log.info("Received request to create post with the following title=[{}]", post.getTitle());
         return new ResponseEntity<>(postService.create(post), HttpStatus.CREATED);
     }
 
@@ -72,6 +76,7 @@ public class PostController {
             @ApiResponse(responseCode = "404", description = "The post with the provided ID is not found",
                     content = {@Content(mediaType = "application/json", schema = @Schema())})})
     public ResponseEntity<PostDTO> updatePost(@RequestBody @Valid final PostDTO post) {
+        log.info("Received request to update post with ID=[{}]", post.getId());
         return new ResponseEntity<>(postService.update(post), HttpStatus.OK);
     }
 
@@ -84,6 +89,7 @@ public class PostController {
             @ApiResponse(responseCode = "404", description = "The post with the provided ID is not found",
                     content = {@Content(mediaType = "application/json", schema = @Schema())})})
     public ResponseEntity<PostDTO> getPostById(@PathVariable final UUID id) {
+        log.info("Received request to retrieve post with ID=[{}]", id);
         return new ResponseEntity<>(postService.findById(id), HttpStatus.OK);
     }
 
@@ -96,6 +102,7 @@ public class PostController {
             @ApiResponse(responseCode = "403", description = "The user does not have permissions to delete this post"),
             @ApiResponse(responseCode = "404", description = "The post with the provided ID is not found")})
     public ResponseEntity<Void> deletePostById(@PathVariable final UUID id) {
+        log.info("Received request to delete post with ID=[{}]", id);
         postService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
