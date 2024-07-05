@@ -8,7 +8,6 @@ import com.writeitup.wiu_post_service.exception.PostNotFoundException;
 import com.writeitup.wiu_post_service.repository.PostRepository;
 import com.writeitup.wiu_post_service.service.PostService;
 import com.writeitup.wiu_post_service.util.PostMapper;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,12 +16,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.writeitup.wiu_post_service.specification.PostSpecification.createSearchSpecification;
 import static com.writeitup.wiu_post_service.util.JwtUtil.getJwtClaim;
+import static com.writeitup.wiu_post_service.util.SortUtil.parseSortParams;
+import static com.writeitup.wiu_post_service.util.VectorUtil.generateTsVector;
 
 @Service
 @RequiredArgsConstructor
@@ -70,15 +69,6 @@ public class PostServiceImpl implements PostService {
         final Specification<Post> postSpecification = createSearchSpecification(search);
         return postRepository.findAll(postSpecification, pageRequest)
                 .map(postMapper::toPostDTO);
-    }
-
-    private Sort.Order parseSortParams(final String sortParams) {
-        final String[] split = sortParams.split(";");
-        return new Sort.Order(Sort.Direction.fromString(split[1]), split[0]);
-    }
-
-    private String generateTsVector(final String title, final String content, final List<String> tags) {
-        return String.format("%s %s %s", title, content, String.join(" ", tags));
     }
 
     private void validateOwnership(final UUID postAuthorId, final UUID tokenAuthorId) {

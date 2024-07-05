@@ -3,7 +3,6 @@ package com.writeitup.wiu_post_service.web;
 import com.writeitup.wiu_post_service.dto.CreatePostDTO;
 import com.writeitup.wiu_post_service.dto.PostDTO;
 import com.writeitup.wiu_post_service.service.PostService;
-import org.apache.commons.lang3.SerializationUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.support.PageableUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
