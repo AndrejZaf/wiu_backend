@@ -47,7 +47,7 @@ public class PostServiceImpl implements PostService {
     public PostDTO update(final PostDTO postDTO) {
         log.debug("Updating a post with ID=[{}]", postDTO.getId());
         Post post = postRepository.findById(postDTO.getId()).orElseThrow(PostNotFoundException::new);
-        validateOwnership(post.getAuthorId(), UUID.fromString(getJwtClaim("id")));
+        validateOwnership(post.getAuthorId(), UUID.fromString(getJwtClaim("sub")));
         postMapper.updatePost(postDTO, post);
         final String vector = generateTsVector(postDTO.getTitle(), postDTO.getContent(), Collections.emptyList());
         post.setSearchVector(vector);
@@ -68,7 +68,7 @@ public class PostServiceImpl implements PostService {
     public void deleteById(final UUID id) {
         log.debug("Deleting a post with ID=[{}]", id);
         final Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-        validateOwnership(post.getAuthorId(), UUID.fromString(getJwtClaim("id")));
+        validateOwnership(post.getAuthorId(), UUID.fromString(getJwtClaim("sub")));
         postRepository.delete(post);
         log.debug("Successfully deleted a post with ID=[{}]", id);
     }

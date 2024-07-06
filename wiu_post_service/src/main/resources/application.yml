@@ -17,11 +17,7 @@ spring:
       discovery:
         prefer-ip-address: ${CONSUL_IP_PREFERENCE:true}
         service-name: ${spring.application.name}
-  # To be removed
   jpa:
-    generate-ddl: true
-    hibernate:
-      ddl-auto: create
     database-platform: com.writeitup.wiu_post_service.config.CustomPostgreSQLDialect
   security:
     oauth2:
