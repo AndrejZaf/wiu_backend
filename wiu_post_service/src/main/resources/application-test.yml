@@ -1,0 +1,13 @@
+spring:
+  liquibase:
+    change-log: db/changelog/master.xml
+    default-schema: public
+    liquibase-schema: public
+  cloud:
+    consul:
+      enabled: false
+  # To be removed
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
