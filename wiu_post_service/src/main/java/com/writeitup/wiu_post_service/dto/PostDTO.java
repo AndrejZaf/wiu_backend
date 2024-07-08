@@ -17,5 +17,8 @@ public class PostDTO {
     private String title;
     @NotNull
     private String content;
+    @NotNull
+    private String status;
+    private String imageData;
     private List<String> tags;
 }

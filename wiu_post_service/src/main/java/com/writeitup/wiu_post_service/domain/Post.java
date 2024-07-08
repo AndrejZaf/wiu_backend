@@ -4,6 +4,8 @@ import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import io.hypersistence.utils.hibernate.type.search.PostgreSQLTSVectorType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -46,6 +48,13 @@ public class Post extends Auditable {
     @Type(ListArrayType.class)
     @Column(name = "tags", columnDefinition = "varchar[]")
     private List<String> tags;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
+
+    @Column(name = "image_data", columnDefinition = "bytea")
+    private byte[] imageData;
 
     @Type(PostgreSQLTSVectorType.class)
     @Column(name = "search_vector", columnDefinition = "tsvector")

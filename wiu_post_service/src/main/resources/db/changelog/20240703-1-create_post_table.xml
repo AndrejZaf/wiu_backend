@@ -19,8 +19,12 @@
             <column name="author_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
+            <column name="status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
             <column name="tags" type="varchar[]"/>
             <column name="search_vector" type="tsvector"/>
+            <column name="image_data" type="binary" />
             <column name="created_date" type="datetime">
                 <constraints nullable="false"/>
             </column>
