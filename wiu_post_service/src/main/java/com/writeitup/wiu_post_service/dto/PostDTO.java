@@ -18,6 +18,8 @@ public class PostDTO {
     @NotNull
     private String content;
     @NotNull
+    private String contentBlocks;
+    @NotNull
     private String status;
     private String imageData;
     private List<String> tags;

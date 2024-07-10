@@ -16,6 +16,9 @@
             <column name="content" type="text">
                 <constraints nullable="false"/>
             </column>
+            <column name="content_blocks" type="text">
+                <constraints nullable="false"/>
+            </column>
             <column name="author_id" type="uuid">
                 <constraints nullable="false"/>
             </column>

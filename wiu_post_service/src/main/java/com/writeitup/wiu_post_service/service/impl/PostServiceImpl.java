@@ -16,7 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.UUID;
 
 import static com.writeitup.wiu_post_service.specification.PostSpecification.createSearchSpecification;
@@ -36,7 +35,7 @@ public class PostServiceImpl implements PostService {
     public PostDTO create(final CreatePostDTO createPostDTO) {
         log.debug("Creating a new post with title=[{}]", createPostDTO.getTitle());
         Post post = postMapper.toPost(createPostDTO);
-        final String vector = generateTsVector(createPostDTO.getTitle(), createPostDTO.getContent(), Collections.emptyList());
+        final String vector = generateTsVector(post.getTitle(), post.getContent(), post.getTags());
         post.setSearchVector(vector);
         post = postRepository.save(post);
         log.debug("Successfully created a post with title=[{}]", createPostDTO.getTitle());
@@ -49,7 +48,7 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(postDTO.getId()).orElseThrow(PostNotFoundException::new);
         validateOwnership(post.getAuthorId(), UUID.fromString(getJwtClaim("sub")));
         postMapper.updatePost(postDTO, post);
-        final String vector = generateTsVector(postDTO.getTitle(), postDTO.getContent(), Collections.emptyList());
+        final String vector = generateTsVector(post.getTitle(), post.getContent(), post.getTags());
         post.setSearchVector(vector);
         post = postRepository.save(post);
         log.debug("Successfully updated a post with ID=[{}]", postDTO.getId());

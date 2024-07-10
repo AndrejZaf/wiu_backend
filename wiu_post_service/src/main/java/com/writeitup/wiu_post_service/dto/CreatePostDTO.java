@@ -16,6 +16,8 @@ public class CreatePostDTO {
     @NotNull
     private String content;
     @NotNull
+    private String contentBlocks;
+    @NotNull
     private Status status;
     private String imageData;
     private List<String> tags;

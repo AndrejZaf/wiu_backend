@@ -59,4 +59,7 @@ public class Post extends Auditable {
     @Type(PostgreSQLTSVectorType.class)
     @Column(name = "search_vector", columnDefinition = "tsvector")
     private String searchVector;
+
+    @Column(name = "content_blocks")
+    private String contentBlocks;
 }
