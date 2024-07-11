@@ -14,11 +14,14 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
+import static java.util.Objects.isNull;
+
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface PostMapper {
 
     @Mapping(source = "imageData", target = "imageData", qualifiedByName = "byteArrayToString")
     @Mapping(source = "content", target = "content", qualifiedByName = "cleanseHtml")
+    @Mapping(source = "content", target = "readTime", qualifiedByName = "readTimeCalculation")
     PostDTO toPostDTO(Post post);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -41,10 +44,20 @@ public interface PostMapper {
     }
 
     @Named("cleanseHtml")
-    static String cleanseHtml(String content) {
-        Source htmlSource = new Source(content);
-        Segment segment = new Segment(htmlSource, 0, htmlSource.length());
-        Renderer htmlRender = new Renderer(segment).setIncludeHyperlinkURLs(true);
+    static String cleanseHtml(final String content) {
+        final Source htmlSource = new Source(content);
+        final Segment segment = new Segment(htmlSource, 0, htmlSource.length());
+        final Renderer htmlRender = new Renderer(segment).setIncludeHyperlinkURLs(true);
         return htmlRender.toString();
+    }
+
+    @Named("readTimeCalculation")
+    static int calculateReadTime(final String content) {
+        if (isNull(content) || content.isEmpty()) {
+            return 0;
+        }
+
+        final String[] words = content.trim().split("\\s+");
+        return (int) Math.ceil((double) words.length / 200);
     }
 }

@@ -24,5 +24,6 @@ public class PostDTO {
     private Status status;
     @NotNull
     private String imageData;
+    private Integer readTime;
     private List<String> tags;
 }
