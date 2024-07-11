@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,4 +27,5 @@ public class PostDTO {
     private String imageData;
     private Integer readTime;
     private List<String> tags;
+    private LocalDateTime createdDate;
 }
