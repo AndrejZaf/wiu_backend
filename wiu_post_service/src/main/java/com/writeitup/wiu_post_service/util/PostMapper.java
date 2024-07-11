@@ -3,9 +3,11 @@ package com.writeitup.wiu_post_service.util;
 import com.writeitup.wiu_post_service.domain.Post;
 import com.writeitup.wiu_post_service.dto.CreatePostDTO;
 import com.writeitup.wiu_post_service.dto.PostDTO;
+import com.writeitup.wiu_post_service.dto.ShortPostDTO;
 import net.htmlparser.jericho.Renderer;
 import net.htmlparser.jericho.Segment;
 import net.htmlparser.jericho.Source;
+import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -20,7 +22,6 @@ import static java.util.Objects.isNull;
 public interface PostMapper {
 
     @Mapping(source = "imageData", target = "imageData", qualifiedByName = "byteArrayToString")
-    @Mapping(source = "content", target = "content", qualifiedByName = "cleanseHtml")
     @Mapping(source = "content", target = "readTime", qualifiedByName = "readTimeCalculation")
     PostDTO toPostDTO(Post post);
 
@@ -34,14 +35,18 @@ public interface PostMapper {
     Post toPost(CreatePostDTO post);
 
     @Named("stringToByteArray")
-    static byte[] stringToByteArray(String imageData) {
+    static byte[] stringToByteArray(final String imageData) {
         return imageData.getBytes();
     }
 
     @Named("byteArrayToString")
-    static String byteArrayToString(byte[] imageData) {
+    static String byteArrayToString(final byte[] imageData) {
         return new String(imageData);
     }
+
+    @Mapping(source = "imageData", target = "imageData", qualifiedByName = "byteArrayToString")
+    @Mapping(source = "content", target = "content", qualifiedByName = "shortenContent")
+    ShortPostDTO toShortPostDTO(Post post);
 
     @Named("cleanseHtml")
     static String cleanseHtml(final String content) {
@@ -59,5 +64,10 @@ public interface PostMapper {
 
         final String[] words = content.trim().split("\\s+");
         return (int) Math.ceil((double) words.length / 200);
+    }
+
+    @Named("shortenContent")
+    static String shortenContent(final String content) {
+        return StringUtils.left(content, 300);
     }
 }

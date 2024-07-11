@@ -3,6 +3,7 @@ package com.writeitup.wiu_post_service.web;
 import com.writeitup.wiu_post_service.domain.Status;
 import com.writeitup.wiu_post_service.dto.CreatePostDTO;
 import com.writeitup.wiu_post_service.dto.PostDTO;
+import com.writeitup.wiu_post_service.dto.ShortPostDTO;
 import com.writeitup.wiu_post_service.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -42,9 +43,9 @@ public class PostController {
     @Operation(summary = "Retrieve posts by page, size, search and sort")
     @ApiResponse(responseCode = "200", description = "Returns a page of posts",
             content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Page.class))})
-    public ResponseEntity<Page<PostDTO>> getPosts(@RequestParam final int page, @RequestParam final int size,
-                                                  @RequestParam(required = false) final String search,
-                                                  @RequestParam(defaultValue = "title;desc") String sort) {
+    public ResponseEntity<Page<ShortPostDTO>> getPosts(@RequestParam final int page, @RequestParam final int size,
+                                                       @RequestParam(required = false) final String search,
+                                                       @RequestParam(defaultValue = "title;desc") String sort) {
         log.info("Received request to retrieve a page of posts by: page=[{}], size=[{}], search=[{}], sort=[{}]", page, size, search, sort);
         return new ResponseEntity<>(postService.findAllBy(search, page, size, sort), HttpStatus.OK);
     }
@@ -113,7 +114,7 @@ public class PostController {
     @Operation(summary = "Retrieve posts by page, size, search and sort")
     @ApiResponse(responseCode = "200", description = "Returns a page of posts",
             content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Page.class))})
-    public ResponseEntity<Page<PostDTO>> getPostsForLoggedInUser(@RequestParam final int page, @RequestParam final int size,
+    public ResponseEntity<Page<ShortPostDTO>> getPostsForLoggedInUser(@RequestParam final int page, @RequestParam final int size,
                                                                  @RequestParam(required = false) final String search,
                                                                  @RequestParam(defaultValue = "title;desc") String sort,
                                                                  @RequestParam Status status) {

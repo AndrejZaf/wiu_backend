@@ -4,6 +4,7 @@ import com.writeitup.wiu_post_service.domain.Post;
 import com.writeitup.wiu_post_service.domain.Status;
 import com.writeitup.wiu_post_service.dto.CreatePostDTO;
 import com.writeitup.wiu_post_service.dto.PostDTO;
+import com.writeitup.wiu_post_service.dto.ShortPostDTO;
 import com.writeitup.wiu_post_service.exception.ForbiddenException;
 import com.writeitup.wiu_post_service.exception.PostNotFoundException;
 import com.writeitup.wiu_post_service.repository.PostRepository;
@@ -74,21 +75,21 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<PostDTO> findAllBy(final String search, final int page, final int size, final String sort) {
+    public Page<ShortPostDTO> findAllBy(final String search, final int page, final int size, final String sort) {
         log.debug("Retrieving a page of post by page=[{}], size=[{}], search=[{}], sort=[{}]", page, size, search, sort);
         final PageRequest pageRequest = PageRequest.of(page, size, Sort.by(parseSortParams(sort)));
         final Specification<Post> postSpecification = createPostSpecification(search, null, Status.PUBLISHED);
         return postRepository.findAll(postSpecification, pageRequest)
-                .map(postMapper::toPostDTO);
+                .map(postMapper::toShortPostDTO);
     }
 
     @Override
-    public Page<PostDTO> findAllByLoggedInUser(final String search, final int page, final int size, final String sort, final Status status) {
+    public Page<ShortPostDTO> findAllByLoggedInUser(final String search, final int page, final int size, final String sort, final Status status) {
         final String authorId = getJwtClaim("sub");
         final PageRequest pageRequest = PageRequest.of(page, size, Sort.by(parseSortParams(sort)));
         final Specification<Post> postSpecification = createPostSpecification(search, authorId, status);
         return postRepository.findAll(postSpecification, pageRequest)
-                .map(postMapper::toPostDTO);
+                .map(postMapper::toShortPostDTO);
     }
 
     private void validateOwnership(final UUID postAuthorId, final UUID tokenAuthorId) {

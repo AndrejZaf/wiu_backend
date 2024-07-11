@@ -3,6 +3,7 @@ package com.writeitup.wiu_post_service.service.impl;
 import com.writeitup.wiu_post_service.domain.Post;
 import com.writeitup.wiu_post_service.dto.CreatePostDTO;
 import com.writeitup.wiu_post_service.dto.PostDTO;
+import com.writeitup.wiu_post_service.dto.ShortPostDTO;
 import com.writeitup.wiu_post_service.exception.ForbiddenException;
 import com.writeitup.wiu_post_service.exception.PostNotFoundException;
 import com.writeitup.wiu_post_service.repository.PostRepository;
@@ -196,7 +197,7 @@ class PostServiceImplUnitTest {
         when(postMapper.toPostDTO(persistedPost)).thenReturn(persistedPostDTO);
 
         // act
-        Page<PostDTO> actualResult = postService.findAllBy(search, page, size, sort);
+        Page<ShortPostDTO> actualResult = postService.findAllBy(search, page, size, sort);
 
         // assert
         assertThat(actualResult.getContent().get(0), is(persistedPostDTO));

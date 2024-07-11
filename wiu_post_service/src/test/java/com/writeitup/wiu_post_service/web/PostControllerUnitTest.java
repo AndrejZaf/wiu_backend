@@ -2,6 +2,7 @@ package com.writeitup.wiu_post_service.web;
 
 import com.writeitup.wiu_post_service.dto.CreatePostDTO;
 import com.writeitup.wiu_post_service.dto.PostDTO;
+import com.writeitup.wiu_post_service.dto.ShortPostDTO;
 import com.writeitup.wiu_post_service.service.PostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,7 @@ class PostControllerUnitTest {
     private PostService postService;
 
     private PostDTO postDTO;
+    private ShortPostDTO shortPostDTO;
 
     @BeforeEach
     void setup() {
@@ -41,6 +43,11 @@ class PostControllerUnitTest {
                 .title("Post Title")
                 .content("Post Content")
                 .tags(List.of("test", "title", "content"))
+                .build();
+        shortPostDTO = ShortPostDTO.builder()
+                .id(UUID.randomUUID())
+                .title("Post Title")
+                .content("Post Content")
                 .build();
     }
 
@@ -105,11 +112,11 @@ class PostControllerUnitTest {
         int size = 10;
         String search = "test";
         String sort = "title;asc";
-        PageImpl<PostDTO> postPage = new PageImpl<>(List.of(postDTO), PageRequest.of(page, size), 1);
+        PageImpl<ShortPostDTO> postPage = new PageImpl<>(List.of(shortPostDTO), PageRequest.of(page, size), 1);
         when(postService.findAllBy(search, page, size, sort)).thenReturn(postPage);
 
         // act
-        ResponseEntity<Page<PostDTO>> postsResponse = postController.getPosts(page, size, search, sort);
+        ResponseEntity<Page<ShortPostDTO>> postsResponse = postController.getPosts(page, size, search, sort);
 
         // assert
         assertThat(postsResponse.getStatusCode(), is(HttpStatus.OK));
