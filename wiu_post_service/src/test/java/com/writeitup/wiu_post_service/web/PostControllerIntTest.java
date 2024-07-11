@@ -1,6 +1,7 @@
 package com.writeitup.wiu_post_service.web;
 
 import com.writeitup.wiu_post_service.IntegrationBaseTest;
+import com.writeitup.wiu_post_service.domain.Status;
 import com.writeitup.wiu_post_service.dto.CreatePostDTO;
 import com.writeitup.wiu_post_service.dto.PostDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,11 +34,15 @@ class PostControllerIntTest extends IntegrationBaseTest {
                 .id(UUID.fromString("d05e777d-537d-4973-98fd-4504322c7d21"))
                 .title("Test")
                 .content("Test Content")
+                .contentBlocks("Test Content")
+                .status(Status.DRAFT)
                 .build();
         updatePost = PostDTO.builder()
                 .id(UUID.fromString("d40abe07-2fc3-4905-839a-be4f0f0a1ae8"))
                 .title("Modified Title")
                 .content("Modified Content")
+                .contentBlocks("Modified Content")
+                .status(Status.PUBLISHED)
                 .build();
     }
 
@@ -83,7 +88,7 @@ class PostControllerIntTest extends IntegrationBaseTest {
         PostDTO postDTO = PostDTO.builder()
                 .id(UUID.fromString("f74ebd6f-eba9-4dca-9859-72ed8acedd97"))
                 .title("Test Post Title 1")
-                .content("Test Post Content 1")
+                .contentBlocks("Test Post Content 1")
                 .build();
 
         // act
@@ -128,10 +133,14 @@ class PostControllerIntTest extends IntegrationBaseTest {
         CreatePostDTO createPostDTO = CreatePostDTO.builder()
                 .title("Test")
                 .content("Test Content")
+                .contentBlocks("Test Content")
+                .status(Status.DRAFT)
                 .build();
         PostDTO postDTO = PostDTO.builder()
                 .title("Test")
                 .content("Test Content")
+                .contentBlocks("Test Content")
+                .status(Status.DRAFT)
                 .build();
 
         // act

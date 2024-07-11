@@ -26,8 +26,12 @@
                 <constraints nullable="false"/>
             </column>
             <column name="tags" type="varchar[]"/>
-            <column name="search_vector" type="tsvector"/>
-            <column name="image_data" type="binary" />
+            <column name="search_vector" type="tsvector">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image_data" type="binary">
+                <constraints nullable="false"/>
+            </column>
             <column name="created_date" type="datetime">
                 <constraints nullable="false"/>
             </column>

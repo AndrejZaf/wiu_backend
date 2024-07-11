@@ -1,5 +1,6 @@
 package com.writeitup.wiu_post_service.web;
 
+import com.writeitup.wiu_post_service.domain.Status;
 import com.writeitup.wiu_post_service.dto.CreatePostDTO;
 import com.writeitup.wiu_post_service.dto.PostDTO;
 import com.writeitup.wiu_post_service.service.PostService;
@@ -105,5 +106,18 @@ public class PostController {
         log.info("Received request to delete post with ID=[{}]", id);
         postService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Retrieve posts by page, size, search and sort")
+    @ApiResponse(responseCode = "200", description = "Returns a page of posts",
+            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Page.class))})
+    public ResponseEntity<Page<PostDTO>> getPostsForLoggedInUser(@RequestParam final int page, @RequestParam final int size,
+                                                                 @RequestParam(required = false) final String search,
+                                                                 @RequestParam(defaultValue = "title;desc") String sort,
+                                                                 @RequestParam Status status) {
+        log.info("Received request to retrieve a page of posts for authenticated user by: page=[{}], size=[{}], search=[{}], sort=[{}], status=[{}]", page, size, search, sort, status);
+        return new ResponseEntity<>(postService.findAllByLoggedInUser(search, page, size, sort, status), HttpStatus.OK);
     }
 }

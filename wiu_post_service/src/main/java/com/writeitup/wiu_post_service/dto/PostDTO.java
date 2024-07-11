@@ -1,5 +1,6 @@
 package com.writeitup.wiu_post_service.dto;
 
+import com.writeitup.wiu_post_service.domain.Status;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +21,8 @@ public class PostDTO {
     @NotNull
     private String contentBlocks;
     @NotNull
-    private String status;
+    private Status status;
+    @NotNull
     private String imageData;
     private List<String> tags;
 }

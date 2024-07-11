@@ -57,19 +57,20 @@ class PostServiceImplUnitTest {
     void setup() {
         newlyCreatedPost = Post.builder()
                 .title("Post Title")
-                .content("Post Content")
+                .contentBlocks("Post Content")
+                .contentBlocks("Post Content")
                 .tags(List.of("test", "title", "content"))
                 .build();
         persistedPost = Post.builder()
                 .id(UUID.randomUUID())
                 .title(newlyCreatedPost.getTitle())
-                .content(newlyCreatedPost.getContent())
+                .contentBlocks(newlyCreatedPost.getContentBlocks())
                 .tags(newlyCreatedPost.getTags())
                 .build();
         persistedPostDTO = PostDTO.builder()
                 .id(persistedPost.getId())
                 .title(persistedPost.getTitle())
-                .content(persistedPost.getContent())
+                .contentBlocks(persistedPost.getContentBlocks())
                 .tags(persistedPost.getTags())
                 .build();
     }
@@ -79,7 +80,7 @@ class PostServiceImplUnitTest {
         // arrange
         CreatePostDTO createPostDTO = CreatePostDTO.builder()
                 .title(newlyCreatedPost.getTitle())
-                .content(newlyCreatedPost.getContent())
+                .content(newlyCreatedPost.getContentBlocks())
                 .tags(newlyCreatedPost.getTags())
                 .build();
         when(postMapper.toPost(createPostDTO)).thenReturn(newlyCreatedPost);
@@ -105,7 +106,7 @@ class PostServiceImplUnitTest {
     void update_invalidJwt_throwsForbidden() {
         // arrange
         Jwt jwt = mock(Jwt.class);
-        when(jwt.getClaims()).thenReturn(Map.of("id", UUID.randomUUID().toString()));
+        when(jwt.getClaims()).thenReturn(Map.of("sub", UUID.randomUUID().toString()));
         createSecurityContext(jwt);
         persistedPost.setAuthorId(UUID.randomUUID());
         when(postRepository.findById(persistedPostDTO.getId())).thenReturn(Optional.ofNullable(persistedPost));
@@ -120,15 +121,16 @@ class PostServiceImplUnitTest {
         // arrange
         persistedPost.setAuthorId(UUID.randomUUID());
         Jwt jwt = mock(Jwt.class);
-        when(jwt.getClaims()).thenReturn(Map.of("id", persistedPost.getAuthorId().toString()));
+        when(jwt.getClaims()).thenReturn(Map.of("sub", persistedPost.getAuthorId().toString()));
         createSecurityContext(jwt);
         when(postRepository.findById(persistedPostDTO.getId())).thenReturn(Optional.ofNullable(persistedPost));
         when(postRepository.save(persistedPost)).thenReturn(persistedPost);
         when(postMapper.toPostDTO(persistedPost)).thenReturn(persistedPostDTO);
 
         // act
-        // assert
         PostDTO actualResult = postService.update(persistedPostDTO);
+
+        // assert
         assertThat(actualResult, notNullValue());
         assertThat(actualResult, is(persistedPostDTO));
     }
@@ -171,7 +173,7 @@ class PostServiceImplUnitTest {
         // arrange
         persistedPost.setAuthorId(UUID.randomUUID());
         Jwt jwt = mock(Jwt.class);
-        when(jwt.getClaims()).thenReturn(Map.of("id", persistedPost.getAuthorId().toString()));
+        when(jwt.getClaims()).thenReturn(Map.of("sub", persistedPost.getAuthorId().toString()));
         createSecurityContext(jwt);
         when(postRepository.findById(persistedPost.getId())).thenReturn(Optional.ofNullable(persistedPost));
 

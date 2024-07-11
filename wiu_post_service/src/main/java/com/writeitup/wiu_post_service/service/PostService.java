@@ -1,5 +1,6 @@
 package com.writeitup.wiu_post_service.service;
 
+import com.writeitup.wiu_post_service.domain.Status;
 import com.writeitup.wiu_post_service.dto.CreatePostDTO;
 import com.writeitup.wiu_post_service.dto.PostDTO;
 import org.springframework.data.domain.Page;
@@ -17,4 +18,6 @@ public interface PostService {
     void deleteById(UUID id);
 
     Page<PostDTO> findAllBy(String search, int page, int size, String sort);
+
+    Page<PostDTO> findAllByLoggedInUser(String search, int page, int size, String sort, Status status);
 }
