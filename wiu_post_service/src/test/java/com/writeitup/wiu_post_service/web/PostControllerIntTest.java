@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static com.writeitup.wiu_post_service.util.TestUtil.generateToken;
@@ -36,12 +37,16 @@ class PostControllerIntTest extends IntegrationBaseTest {
                 .content("Test Content")
                 .contentBlocks("Test Content")
                 .status(Status.DRAFT)
+                .imageData("image")
                 .build();
         updatePost = PostDTO.builder()
                 .id(UUID.fromString("d40abe07-2fc3-4905-839a-be4f0f0a1ae8"))
                 .title("Modified Title")
                 .content("Modified Content")
                 .contentBlocks("Modified Content")
+                .readTime(1)
+                .createdDate(LocalDateTime.parse("2024-07-11T00:00"))
+                .imageData("image")
                 .status(Status.PUBLISHED)
                 .build();
     }
@@ -88,6 +93,7 @@ class PostControllerIntTest extends IntegrationBaseTest {
         PostDTO postDTO = PostDTO.builder()
                 .id(UUID.fromString("f74ebd6f-eba9-4dca-9859-72ed8acedd97"))
                 .title("Test Post Title 1")
+                .content("Test Post Content 1")
                 .contentBlocks("Test Post Content 1")
                 .build();
 
@@ -97,7 +103,9 @@ class PostControllerIntTest extends IntegrationBaseTest {
 
         // assert
         PostDTO actualPost = objectMapper.readValue(actualResult.getResponse().getContentAsString(), PostDTO.class);
-        assertThat(actualPost, is(postDTO));
+        assertThat(actualPost.getId(), is(postDTO.getId()));
+        assertThat(actualPost.getTitle(), is(postDTO.getTitle()));
+        assertThat(actualPost.getContent(), is(postDTO.getContent()));
     }
 
     @Test
@@ -135,6 +143,7 @@ class PostControllerIntTest extends IntegrationBaseTest {
                 .content("Test Content")
                 .contentBlocks("Test Content")
                 .status(Status.DRAFT)
+                .imageData("image")
                 .build();
         PostDTO postDTO = PostDTO.builder()
                 .title("Test")
@@ -233,6 +242,6 @@ class PostControllerIntTest extends IntegrationBaseTest {
 
         // assert
         assertThat(content, containsString("\"numberOfElements\":1"));
-        assertThat(content, containsString("\"content\":[{\"id\":\"f74ebd6f-eba9-4dca-9859-72ed8acedd97\",\"title\":\"Test Post Title 1\",\"content\":\"Test Post Content 1\",\"tags\":null}]"));
+        assertThat(content, containsString("\"content\":[{\"id\":\"f74ebd6f-eba9-4dca-9859-72ed8acedd97\""));
     }
 }

@@ -53,26 +53,34 @@ class PostServiceImplUnitTest {
     private Post newlyCreatedPost;
     private Post persistedPost;
     private PostDTO persistedPostDTO;
+    private ShortPostDTO shortPersistedPostDTO;
 
     @BeforeEach
     void setup() {
         newlyCreatedPost = Post.builder()
                 .title("Post Title")
-                .contentBlocks("Post Content")
+                .content("Post Content")
                 .contentBlocks("Post Content")
                 .tags(List.of("test", "title", "content"))
                 .build();
         persistedPost = Post.builder()
                 .id(UUID.randomUUID())
                 .title(newlyCreatedPost.getTitle())
+                .content(newlyCreatedPost.getContent())
                 .contentBlocks(newlyCreatedPost.getContentBlocks())
                 .tags(newlyCreatedPost.getTags())
                 .build();
         persistedPostDTO = PostDTO.builder()
                 .id(persistedPost.getId())
                 .title(persistedPost.getTitle())
+                .content(persistedPost.getContent())
                 .contentBlocks(persistedPost.getContentBlocks())
                 .tags(persistedPost.getTags())
+                .build();
+        shortPersistedPostDTO = ShortPostDTO.builder()
+                .id(persistedPost.getId())
+                .title(persistedPost.getTitle())
+                .content(persistedPost.getContent())
                 .build();
     }
 
@@ -194,13 +202,13 @@ class PostServiceImplUnitTest {
         String sort = "title;asc";
         PageImpl<Post> postPage = new PageImpl<>(List.of(persistedPost), PageRequest.of(page, size), 1);
         when(postRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class))).thenReturn(postPage);
-        when(postMapper.toPostDTO(persistedPost)).thenReturn(persistedPostDTO);
+        when(postMapper.toShortPostDTO(persistedPost)).thenReturn(shortPersistedPostDTO);
 
         // act
         Page<ShortPostDTO> actualResult = postService.findAllBy(search, page, size, sort);
 
         // assert
-        assertThat(actualResult.getContent().get(0), is(persistedPostDTO));
+        assertThat(actualResult.getContent().get(0), is(shortPersistedPostDTO));
     }
 
     private static void createSecurityContext(Jwt jwt) {
