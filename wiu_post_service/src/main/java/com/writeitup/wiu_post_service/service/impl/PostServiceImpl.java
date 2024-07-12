@@ -24,7 +24,7 @@ import java.util.UUID;
 import static com.writeitup.wiu_post_service.specification.PostSpecification.createPostSpecification;
 import static com.writeitup.wiu_post_service.util.JwtUtil.getJwtClaim;
 import static com.writeitup.wiu_post_service.util.SortUtil.parseSortParams;
-import static com.writeitup.wiu_post_service.util.VectorUtil.generateTsVector;
+import static com.writeitup.wiu_post_service.util.VectorUtil.mergeContent;
 
 @Slf4j
 @Service
@@ -38,7 +38,7 @@ public class PostServiceImpl implements PostService {
     public PostDTO create(final CreatePostDTO createPostDTO) {
         log.debug("Creating a new post with title=[{}]", createPostDTO.getTitle());
         Post post = postMapper.toPost(createPostDTO);
-        final String vector = generateTsVector(post.getTitle(), createPostDTO.getContent(), post.getTags());
+        final String vector = postRepository.generateVector(mergeContent(post.getTitle(), post.getContent(), post.getTags())).getValue();
         post.setSearchVector(vector);
         post = postRepository.save(post);
         log.debug("Successfully created a post with title=[{}]", createPostDTO.getTitle());
@@ -51,7 +51,7 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(postDTO.getId()).orElseThrow(PostNotFoundException::new);
         validateOwnership(post.getAuthorId(), UUID.fromString(getJwtClaim("sub")));
         postMapper.updatePost(postDTO, post);
-        final String vector = generateTsVector(post.getTitle(), postDTO.getContent(), post.getTags());
+        final String vector = postRepository.generateVector(mergeContent(post.getTitle(), post.getContent(), post.getTags())).getValue();
         post.setSearchVector(vector);
         post = postRepository.save(post);
         log.debug("Successfully updated a post with ID=[{}]", postDTO.getId());
