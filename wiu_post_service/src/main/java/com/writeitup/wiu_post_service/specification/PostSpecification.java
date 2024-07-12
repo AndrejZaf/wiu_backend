@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -19,7 +20,7 @@ public class PostSpecification {
     private static final String TSVECTOR_MATCH = "tsvector_match";
     private static final String PLAIN_TO_TSQUERY = "plainto_tsquery";
 
-    public static Specification<Post> createPostSpecification(final String search, final String authorId, Status status) {
+    public static Specification<Post> createPostSpecification(final String search, final String authorId, final Status status) {
         return (root, query, criteriaBuilder) -> {
             final List<Predicate> predicates = new ArrayList<>();
             if (nonNull(search) && !isEmpty(search)) {
@@ -29,8 +30,8 @@ public class PostSpecification {
                 predicates.add(searchPredicate);
             }
 
-            if (nonNull(authorId) && isEmpty(authorId)) {
-                Predicate authorPredicate = criteriaBuilder.equal(root.get(Post_.authorId), authorId);
+            if (nonNull(authorId) && !isEmpty(authorId)) {
+                Predicate authorPredicate = criteriaBuilder.equal(root.get(Post_.authorId), UUID.fromString(authorId));
                 predicates.add(authorPredicate);
             }
 

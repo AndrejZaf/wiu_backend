@@ -1,6 +1,7 @@
 package com.writeitup.wiu_post_service.service.impl;
 
 import com.writeitup.wiu_post_service.domain.Post;
+import com.writeitup.wiu_post_service.domain.Post_;
 import com.writeitup.wiu_post_service.domain.Status;
 import com.writeitup.wiu_post_service.dto.CreatePostDTO;
 import com.writeitup.wiu_post_service.dto.PostDTO;
@@ -86,7 +87,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Page<ShortPostDTO> findAllByLoggedInUser(final String search, final int page, final int size, final String sort, final Status status) {
         final String authorId = getJwtClaim("sub");
-        final PageRequest pageRequest = PageRequest.of(page, size, Sort.by(parseSortParams(sort)));
+        final PageRequest pageRequest = PageRequest.of(page, size, Sort.by(parseSortParams(sort), Sort.Order.by(Post_.ID)));
         final Specification<Post> postSpecification = createPostSpecification(search, authorId, status);
         return postRepository.findAll(postSpecification, pageRequest)
                 .map(postMapper::toShortPostDTO);
