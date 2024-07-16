@@ -15,6 +15,7 @@ public class PostDTO {
 
     @NotNull
     private UUID id;
+    private UUID authorId;
     @NotNull
     private String title;
     @NotNull
