@@ -18,5 +18,6 @@
     <modules>
         <module>wiu_gateway_service</module>
         <module>wiu_post_service</module>
+        <module>wiu_user_service</module>
     </modules>
 </project>
