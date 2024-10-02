@@ -37,6 +37,10 @@ spring:
           uri: lb://wiu-post-service
           predicates:
             - Path=/api/v1/posts/**
+        - id: wiu-user-service
+          uri: lb://wiu-user-service
+          predicates:
+            - Path=/api/v1/users/**
 management:
   endpoints:
     web:
