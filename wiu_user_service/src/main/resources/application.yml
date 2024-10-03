@@ -6,6 +6,10 @@ spring:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/wiu_user}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:user}
+  liquibase:
+    change-log: db/changelog/master.xml
+    default-schema: public
+    liquibase-schema: public
   security:
     oauth2:
       resourceserver:
