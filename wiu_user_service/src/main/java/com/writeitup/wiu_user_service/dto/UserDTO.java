@@ -1,5 +1,6 @@
 package com.writeitup.wiu_user_service.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,9 +10,11 @@ import java.util.UUID;
 @Builder
 public class UserDTO {
 
+    @NotNull
     private UUID id;
+    @NotNull
     private String email;
     private String username;
     private String bio;
-    private byte[] image;
+    private String imageData;
 }

@@ -5,6 +5,7 @@ import com.writeitup.wiu_user_service.dto.UserDTO;
 import com.writeitup.wiu_user_service.exception.UserNotFoundException;
 import com.writeitup.wiu_user_service.repository.UserRepository;
 import com.writeitup.wiu_user_service.service.UserService;
+import com.writeitup.wiu_user_service.util.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
@@ -29,6 +30,7 @@ public class UserServiceImpl implements UserService {
 
     private final Keycloak keycloak;
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
     public UserDTO getCurrentUser() {
@@ -47,32 +49,31 @@ public class UserServiceImpl implements UserService {
         return createCombinedUserDTO(currentUserFromDb, currentUser);
     }
 
-    private void create(final UserRepresentation currentUser) {
+    @Override
+    public UserDTO update(final UserDTO userDTO) {
+        User user = userRepository.findById(userDTO.getId())
+                .orElseThrow(() -> new UserNotFoundException(String.format("User not found id: %s", userDTO.getId())));
+        userMapper.updateUser(userDTO, user);
+        user = userRepository.save(user);
+        return userMapper.toUserDTO(user);
+    }
+
+    private User create(final UserRepresentation currentUser) {
         final User user = User.builder()
                 .id(UUID.fromString(currentUser.getId()))
                 .email(currentUser.getEmail())
                 .username(currentUser.getUsername())
+                .imageData(new byte[]{})
                 .build();
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     private UserDTO createCombinedUserDTO(final Optional<User> currentUserFromDb, final UserRepresentation currentUser) {
         if (currentUserFromDb.isEmpty()) {
-            create(currentUser);
-            return UserDTO.builder()
-                    .id(UUID.fromString(currentUser.getId()))
-                    .email(currentUser.getEmail())
-                    .username(currentUser.getUsername())
-                    .build();
+            return userMapper.toUserDTO(create(currentUser));
         } else {
             User user = currentUserFromDb.get();
-            return UserDTO.builder()
-                    .id(user.getId())
-                    .email(user.getEmail())
-                    .username(user.getUsername())
-                    .bio(user.getBio())
-                    .image(user.getImageData())
-                    .build();
+            return userMapper.toUserDTO(user);
         }
     }
 }
