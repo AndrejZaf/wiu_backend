@@ -15,18 +15,27 @@ public class PostDTO {
 
     @NotNull
     private UUID id;
+
     private UUID authorId;
+
     @NotNull
     private String title;
+
     @NotNull
     private String content;
+
     @NotNull
     private String contentBlocks;
+
     @NotNull
     private Status status;
+
     @NotNull
     private String imageData;
+
     private Integer readTime;
+
     private List<String> tags;
+
     private LocalDateTime createdDate;
 }

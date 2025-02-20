@@ -14,6 +14,8 @@ import static com.writeitup.wiu_post_service.util.JwtUtil.getJwtClaim;
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 public class JpaConfiguration {
 
+    private static final String SUB = "sub";
+
     @Bean
     public AuditorAware<UUID> auditorAware() {
         return new AuditorAwareImpl();
@@ -23,7 +25,7 @@ public class JpaConfiguration {
 
         @Override
         public Optional<UUID> getCurrentAuditor() {
-            return Optional.of(UUID.fromString(getJwtClaim("sub")));
+            return Optional.of(UUID.fromString(getJwtClaim(SUB)));
         }
     }
 }

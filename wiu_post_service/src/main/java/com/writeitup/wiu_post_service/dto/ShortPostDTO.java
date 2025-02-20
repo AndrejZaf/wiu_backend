@@ -12,10 +12,13 @@ public class ShortPostDTO {
 
     @NotNull
     private UUID id;
+
     @NotNull
     private String title;
+
     @NotNull
     private String content;
+
     @NotNull
     private String imageData;
 }

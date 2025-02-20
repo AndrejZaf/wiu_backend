@@ -13,13 +13,18 @@ public class CreatePostDTO {
 
     @NotNull
     private String title;
+
     @NotNull
     private String content;
+
     @NotNull
     private String contentBlocks;
+
     @NotNull
     private Status status;
+
     @NotNull
     private String imageData;
+
     private List<String> tags;
 }

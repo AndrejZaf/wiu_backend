@@ -25,6 +25,7 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
 
     private static final String REALM_ACCESS = "realm_access";
     private static final String ROLE_PREFIX = "ROLE_";
+    private static final String ROLES = "roles";
 
     @Override
     public AbstractAuthenticationToken convert(final Jwt jwt) {
@@ -36,7 +37,7 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
 
     private Set<? extends GrantedAuthority> extractUserRoles(final Jwt jwt) {
         final Map<String, Object> realmAccess = jwt.getClaim(REALM_ACCESS);
-        final List<String> realmRoles = (List<String>) realmAccess.get("roles");
+        final List<String> realmRoles = (List<String>) realmAccess.get(ROLES);
         if (isNotEmpty(realmRoles)) {
             return realmRoles.stream()
                     .map(role -> new SimpleGrantedAuthority(String.format("%s%s", ROLE_PREFIX, role.toUpperCase())))
